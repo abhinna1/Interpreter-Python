@@ -73,14 +73,24 @@ class Interpreter:
             if self.operator:
                 left = self.stack.pop()
                 right = int_token_factory(i)
-                return self.operator.operate(left.value, right.value)
+                return (
+                    self.operator.operate(left.value, right.value)
+                )
             if i.isdigit():
-                current_token = int_token_factory(i)
+                if len(self.stack) > 0:
+                    num = chr(i)
+                    while len(self.stack) != 0:
+                        num += str(self.stack.pop())
+                    num = int(num[::-1])
+                    current_token = int_token_factory(num)
+                else:
+                    current_token = int_token_factory(i)
                 self.stack.append(current_token)
             else:
                 self.operator = operator_factory(i)
+        return self.stack.pop()
 
-    def get_stack(self):
+    def _get_stack(self):
         print(self.stack)
 
 
